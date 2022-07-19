@@ -1,74 +1,76 @@
 #include "sort.h"
-#include <stdio.h>
+
+/*prototypes. funcs() defined later in this file*/
+void sort_alg(int *arr, int left, int right, size_t size);
+int split(int *arr, int left, int right, size_t size);
+
 /**
- * quick_sort - sorts an array of integers in ascending order
- * using the quick sort sort algorithm
- * @array: pointer to the array
- * @size: size of the array
-*/
+  * quick_sort - quicksort algorithm
+  * @array: array to be sorted
+  * @size: size of array
+  */
 void quick_sort(int *array, size_t size)
 {
-recursive_quick_sort(array, size, 0, size - 1);
+	if (array == NULL || size <= 1)
+		return;
+	sort_alg(array, 0, size - 1, size);
 }
 
 /**
- * recursive_quick_sort - recursive part
- * @array: array to use
- * @size: size
- * @start: start index
- * @end: end index
-*/
-void recursive_quick_sort(int *array, size_t size, int start, int end)
+  * sort_alg - recursive sorting algorithm
+  * @arr: array
+  * @left: leftmost index
+  * @right: rightmost index
+  * @size: full size of array
+  */
+void sort_alg(int *arr, int left, int right, size_t size)
 {
-int p;
-if (start < end)
-{
-	p = partition(array, size, start, end);
+	int pivot;
 
-	recursive_quick_sort(array, size, start, p - 1);
-	recursive_quick_sort(array, size, p + 1, end);
-}
-
-}
-
-/**
- * partition - partition the array
- * @array: array to use
- * @size: size
- * @start: start index
- * @end: end index
- * Return: partition index
-*/
-size_t partition(int *array, size_t size, int start, int end)
-{
-int pivot = array[end];
-int i = start - 1;
-int j;
-
-for (j = start; j <= end - 1; j++)
-{
-	if (array[j] < pivot)
+	if (left < right)
 	{
-		i++;
-		swap_int1(array, i, j);
-		print_array(array, size);
+		pivot = split(arr, left, right, size);
+		sort_alg(arr, left, pivot - 1, size);
+		sort_alg(arr, pivot + 1, right, size);
 	}
 }
-swap_int1(array, i + 1, end);
-print_array(array, size);
-return (i+1);
-}
 
 /**
- * swap_int1 - swap variable values
- * @array: array to use
- * @a: index 1
- * @b: index 2
-*/
-void swap_int1(int *array, int a, int b)
+  * split - split array
+  * @arr: array
+  * @left: leftmost index
+  * @right: rightmost index
+  * @size: full array size
+  * Return: pivot index
+  */
+int split(int *arr, int left, int right, size_t size)
 {
-int tmp;
-tmp = array[a];
-array[a] = array[b];
-array[b] = tmp;
+	int i, i2, pivot, tmp;
+
+	pivot = arr[right];
+	i = left;
+
+	for (i2 = left; i2 < right; i2++)
+	{
+		if (arr[i2] < pivot)
+		{
+			if (i != i2)
+			{
+				tmp = arr[i2];
+				arr[i2] = arr[i];
+				arr[i] = tmp;
+				print_array(arr, size);
+			}
+			i++;
+		}
+	}
+	if (arr[i] != arr[right])
+	{
+		tmp = arr[i];
+		arr[i] = arr[right];
+		arr[right] = tmp;
+		print_array(arr, size);
+	}
+
+	return (i);
 }
